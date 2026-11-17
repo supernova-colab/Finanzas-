@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#000;--card:#0E0B16;--card2:#15111F;--line:#241E33;--tx:#F2F0EA;--mut:#9C97A8;--p:#8B5CF6;--pl:#B9A3FF;--ok:#4ADE80;--bad:#FB7185;--warn:#FBBF24}
+:root{--bg:#000;--card:#0E0B16;--card2:#15111F;--line:#241E33;--tx:#F2F0EA;--mut:#9C97A8;--p:#8B5CF6;--pl:#B9A3FF;--ok:#4ADE80;--bad:#FB7185;--warn:#FBBF24;--in:#34D399;--out:#F87171;--pend:#FBBF24;--aho:#A78BFA;--debo:#FB923C;--cobro:#38BDF8}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 body:before{content:"";position:fixed;inset:0;background:radial-gradient(600px 400px at 100% -10%,rgba(139,92,246,.22),transparent 70%),radial-gradient(500px 400px at -10% 110%,rgba(139,92,246,.10),transparent 70%);pointer-events:none;z-index:-1}
@@ -35,7 +35,8 @@ header small{display:block;color:var(--mut);font-size:13px;margin-top:2px;font-w
 .mini b{display:block;font-size:19px;margin-top:6px}
 .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-.tile{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;border-left:4px solid var(--c,#333)}
+.tile b{color:var(--c)}
 .tile span{font-size:12px;color:var(--mut)} .tile b{display:block;font-size:20px;margin-top:6px}
 nav{display:flex;gap:6px;margin:26px 0 16px;overflow-x:auto;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
@@ -58,13 +59,13 @@ nav button.on{background:var(--p);border-color:var(--p);color:#fff}
 .it .tx b{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .it .tx span{font-size:12px;color:var(--mut)}
 .amt{font-weight:700;font-size:14px;white-space:nowrap}
-.in{color:var(--ok)} .out{color:var(--tx)}
+.amt.in{color:var(--in)} .amt.out{color:var(--out)}
 .chk{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid #3a3150;background:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
 .chk.on{background:var(--ok);border-color:var(--ok);color:#000}
 .tag{font-size:11px;font-weight:600;padding:3px 8px;border-radius:99px;margin-left:6px}
 .tag.bad{background:rgba(251,113,133,.15);color:var(--bad)} .tag.warn{background:rgba(251,191,36,.14);color:var(--warn)} .tag.ok{background:rgba(74,222,128,.13);color:var(--ok)}
 .bar{height:10px;border-radius:99px;background:#1d1729;overflow:hidden;margin-top:10px}
-.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--p),var(--pl))}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--bc,linear-gradient(90deg,var(--p),var(--pl)))}
 .goal{padding:14px 0;border-bottom:1px solid #181424}
 .goal:last-child{border-bottom:0}
 .goal .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
@@ -100,7 +101,12 @@ input:focus,select:focus{border-color:var(--p)}
 .note{font-size:11px;color:#6d6879;text-align:center;margin-top:28px}
 .bk{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--tx);font-size:16px;margin-left:8px}
 textarea{width:100%;height:120px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;color:var(--tx);font:12px monospace;resize:none}
-.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);background:#1d1630;border:1px solid var(--line);padding:10px 16px;border-radius:99px;font-size:13px;opacity:0;transition:.25s;z-index:40;pointer-events:none}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);background:#1d1630;border:1px solid var(--line);padding:8px 8px 8px 16px;border-radius:99px;font-size:13px;opacity:0;transition:.25s;z-index:40;pointer-events:none;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.toast button{border:0;background:var(--p);color:#fff;border-radius:99px;padding:7px 12px;font:600 12px Inter,sans-serif}
+.undo{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--tx);font-size:17px;margin-left:8px;display:none}
+.undo.on{display:block}
+.x{position:absolute;top:14px;right:16px;width:36px;height:36px;border-radius:50%;border:0;background:var(--card2);color:var(--tx);font-size:18px}
+.sheet{position:fixed}
 .toast.on{opacity:1;transform:translateX(-50%)}
 </style>
 </head>
@@ -108,22 +114,22 @@ textarea{width:100%;height:120px;background:var(--card);border:1px solid var(--l
 <div class="wrap">
   <header>
     <div><h1>Mis finanzas</h1><small id="saveSt">Cargando…</small></div>
-    <div style="display:flex;align-items:center"><div class="mes"><button id="prev">‹</button><span id="mesLbl"></span><button id="next">›</button></div><button class="bk" id="bkBtn" aria-label="Respaldo">⇅</button></div>
+    <div style="display:flex;align-items:center"><div class="mes"><button id="prev">‹</button><span id="mesLbl"></span><button id="next">›</button></div><button class="undo" id="undoBtn" aria-label="Deshacer">↶</button><button class="bk" id="bkBtn" aria-label="Respaldo">⇅</button></div>
   </header>
 
   <section class="hero">
     <small>Balance del mes</small>
     <div class="big" id="hBal">$0</div>
     <div class="row">
-      <div class="mini"><span><i class="dot" style="background:var(--ok)"></i>Ingresos</span><b id="hIn">$0</b></div>
-      <div class="mini"><span><i class="dot" style="background:var(--bad)"></i>Egresos</span><b id="hOut">$0</b></div>
+      <div class="mini"><span><i class="dot" style="background:var(--in)"></i>Ingresos</span><b id="hIn" style="color:var(--in)">$0</b></div>
+      <div class="mini"><span><i class="dot" style="background:var(--out)"></i>Egresos</span><b id="hOut" style="color:var(--out)">$0</b></div>
     </div>
   </section>
   <div class="tiles">
-    <div class="tile"><span>Por pagar este mes</span><b id="tPend">$0</b></div>
-    <div class="tile"><span>Ahorrado</span><b id="tAho">$0</b></div>
-    <div class="tile"><span>Lo que debo</span><b id="tDebo">$0</b></div>
-    <div class="tile"><span>Me deben</span><b id="tMeDeben">$0</b></div>
+    <div class="tile" style="--c:var(--pend)"><span>Por pagar este mes</span><b id="tPend">$0</b></div>
+    <div class="tile" style="--c:var(--aho)"><span>Ahorrado</span><b id="tAho">$0</b></div>
+    <div class="tile" style="--c:var(--debo)"><span>Lo que debo</span><b id="tDebo">$0</b></div>
+    <div class="tile" style="--c:var(--cobro)"><span>Me deben</span><b id="tMeDeben">$0</b></div>
   </div>
 
   <nav id="tabs">
@@ -157,12 +163,16 @@ const mk=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
 const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fdate=s=>{if(!s)return"";const[y,m,d]=s.split("-");return +d+" "+MESES[+m-1].slice(0,3)};
-function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),1800)}
+function toast(t,undo){const e=$("toast");e.innerHTML=esc(t)+(undo&&UNDO.length?'<button id="tUndo">Deshacer</button>':"");e.classList.add("on");e.style.pointerEvents=undo?"auto":"none";if(undo&&UNDO.length)$("tUndo").onclick=doUndo;clearTimeout(e._t);e._t=setTimeout(()=>{e.classList.remove("on");e.style.pointerEvents="none"},undo?5000:1800)}
+let UNDO=[],LAST=null;
+function remember(){const now=JSON.stringify(S);if(LAST!==null&&LAST!==now){UNDO.push(LAST);if(UNDO.length>30)UNDO.shift()}LAST=now;const u=$("undoBtn");if(u)u.classList.toggle("on",UNDO.length>0)}
+function doUndo(){if(!UNDO.length)return;S=JSON.parse(UNDO.pop());LAST=JSON.stringify(S);skipRemember=true;save();skipRemember=false;closeSheet();render();const u=$("undoBtn");if(u)u.classList.toggle("on",UNDO.length>0);toast("Listo, se deshizo")}
+let skipRemember=false;
 
 /* ---------- guardar ---------- */
 function lsGet(){try{return JSON.parse(localStorage.getItem("misFinanzas")||"null")}catch(e){return null}}
 function lsSet(){try{localStorage.setItem("misFinanzas",JSON.stringify(S))}catch(e){}}
-function save(){lsSet();$("saveSt").textContent="Guardado ✓"}
+function save(){if(!skipRemember)remember();lsSet();$("saveSt").textContent="Guardado ✓"}
 function init(){
   const local=lsGet(); if(local) S=Object.assign(S,local);
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
@@ -197,9 +207,10 @@ function pendTotal(k){return pagosDelMes(k).filter(p=>!p.paid).reduce((s,p)=>s+p
 
 /* ---------- render ---------- */
 function render(){
+  if(LAST===null)LAST=JSON.stringify(S);
   const k=mk(cur); $("mesLbl").textContent=MESES[cur.getMonth()]+" "+cur.getFullYear();
   const {i,o}=monthTotals(k);
-  $("hBal").textContent=money(i-o); $("hBal").style.color=(i-o)<0?"var(--bad)":"#fff";
+  $("hBal").textContent=money(i-o); $("hBal").style.color=(i-o)<0?"var(--out)":"var(--in)";
   $("hIn").textContent=money(i); $("hOut").textContent=money(o);
   $("tPend").textContent=money(pendTotal(k));
   $("tAho").textContent=money(S.metas.reduce((s,m)=>s+m.ab,0));
@@ -216,21 +227,58 @@ function donut(data,total){
 function vResumen(k){
   const by={};S.movs.forEach(m=>{if(m.t==="out"&&inMonth(m.f,k))by[m.cat]=(by[m.cat]||0)+m.m});
   const arr=Object.entries(by).map(([c,v])=>({c,v})).sort((a,b)=>b.v-a.v);const tot=arr.reduce((s,a)=>s+a.v,0);
-  let h=`<div class="card"><h3>¿En qué se fue el dinero?</h3><div class="sub">Egresos por categoría este mes</div>`;
+  let h=vSalud(k)+vRitmo(k)+`<div class="card"><h3>¿En qué se fue el dinero?</h3><div class="sub">Egresos por categoría este mes</div>`;
   h+=tot?`<div class="donut">${donut(arr,tot)}<div class="legend">${arr.map((a,ix)=>`<div><span class="dot" style="background:${COLORS[ix%COLORS.length]}"></span><span>${esc(a.c)}</span><b>${Math.round(a.v/tot*100)}%</b></div>`).join("")}</div></div>`:`<div class="empty">Aún no hay egresos este mes.<br>Toca <b>+</b> para agregar uno.</div>`;
   h+=`</div>`;
   // barras 6 meses
   const ms=[];for(let x=5;x>=0;x--){const d=new Date(cur.getFullYear(),cur.getMonth()-x,1);ms.push({d,...monthTotals(mk(d))})}
   const mx=Math.max(1,...ms.map(m=>Math.max(m.i,m.o)));
   const W=320,H=150,bw=16;
-  const bars=ms.map((m,ix)=>{const x=ix*(W/6)+12;const hi=m.i/mx*(H-20),ho=m.o/mx*(H-20);return `<rect x="${x}" y="${H-hi}" width="${bw}" height="${hi}" rx="5" fill="#8B5CF6"/><rect x="${x+bw+4}" y="${H-ho}" width="${bw}" height="${ho}" rx="5" fill="#3a3150"/><text x="${x+bw+2}" y="${H+16}" text-anchor="middle" fill="#9C97A8" font-size="10" font-family="Inter">${MESES[m.d.getMonth()].slice(0,3)}</text>`}).join("");
-  h+=`<div class="card"><h3>Ingresos vs egresos</h3><div class="sub"><span class="dot" style="background:#8B5CF6"></span> Ingresos &nbsp; <span class="dot" style="background:#3a3150"></span> Egresos · últimos 6 meses</div><svg viewBox="0 0 ${W} ${H+22}" width="100%">${bars}</svg></div>`;
+  const bars=ms.map((m,ix)=>{const x=ix*(W/6)+12;const hi=m.i/mx*(H-20),ho=m.o/mx*(H-20);return `<rect x="${x}" y="${H-hi}" width="${bw}" height="${hi}" rx="5" fill="#34D399"/><rect x="${x+bw+4}" y="${H-ho}" width="${bw}" height="${ho}" rx="5" fill="#F87171"/><text x="${x+bw+2}" y="${H+16}" text-anchor="middle" fill="#9C97A8" font-size="10" font-family="Inter">${MESES[m.d.getMonth()].slice(0,3)}</text>`}).join("");
+  h+=vBalMeses();
+  h+=`<div class="card"><h3>Ingresos vs egresos</h3><div class="sub"><span class="dot" style="background:#34D399"></span> Ingresos &nbsp; <span class="dot" style="background:#F87171"></span> Egresos · últimos 6 meses</div><svg viewBox="0 0 ${W} ${H+22}" width="100%">${bars}</svg></div>`;
   // próximos pagos
   const pend=pagosDelMes(k).filter(p=>!p.paid).slice(0,4);
   h+=`<div class="card"><h3>Próximos pagos</h3><div class="sub">Lo que falta pagar este mes</div>${pend.length?`<div class="list">${pend.map(pagoRow).join("")}</div>`:`<div class="empty">Nada pendiente 🎉</div>`}</div>`;
   // metas
   if(S.metas.length) h+=`<div class="card"><h3>Metas de ahorro</h3><div class="sub">Tu avance</div>${S.metas.map(m=>`<div class="goal"><div class="top"><b>${esc(m.n)}</b><span>${money(m.ab)} de ${money(m.meta)}</span></div><div class="bar"><i style="width:${Math.min(100,m.ab/m.meta*100)}%"></i></div></div>`).join("")}</div>`;
   return h;
+}
+function vSalud(k){
+  const {i,o}=monthTotals(k); const pct=i?o/i*100:(o?999:0); const dif=i-o;
+  let st,col,msg;
+  if(!i&&!o){st="Sin datos";col="var(--mut)";msg="Agrega tus ingresos y gastos del mes para ver cómo vas."}
+  else if(o>i){st="Estás gastando más de lo que ganas";col="var(--out)";msg=`Te pasaste por <b style="color:var(--out)">${money(o-i)}</b> este mes.`}
+  else if(pct>=85){st="Cuidado, vas muy justo";col="var(--pend)";msg=`Has gastado el <b>${Math.round(pct)}%</b> de lo que ganaste. Te quedan <b style="color:var(--in)">${money(dif)}</b>.`}
+  else{st="Vas bien";col="var(--in)";msg=`Has gastado el <b>${Math.round(pct)}%</b> de lo que ganaste. Te sobran <b style="color:var(--in)">${money(dif)}</b>.`}
+  const mx=Math.max(i,o,1);
+  return `<div class="card" style="border-color:${col};box-shadow:0 0 0 1px ${col} inset"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span class="dot" style="background:${col};width:12px;height:12px;box-shadow:0 0 12px ${col}"></span><h3 style="margin:0;color:${col}">${st}</h3></div><div class="sub" style="font-size:13px;color:#d8d4e0">${msg}</div>
+  <div style="display:grid;gap:12px"><div><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mut)"><span>Ganaste</span><b style="color:var(--in)">${money(i)}</b></div><div class="bar" style="--bc:var(--in);height:14px"><i style="width:${i/mx*100}%"></i></div></div>
+  <div><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mut)"><span>Gastaste</span><b style="color:var(--out)">${money(o)}</b></div><div class="bar" style="--bc:var(--out);height:14px"><i style="width:${o/mx*100}%"></i></div></div></div></div>`;
+}
+function vRitmo(k){
+  const [y,m]=k.split("-").map(Number); const days=new Date(y,m,0).getDate();
+  const ci=new Array(days+1).fill(0),co=new Array(days+1).fill(0);
+  S.movs.forEach(x=>{if(inMonth(x.f,k)){const dd=+x.f.slice(8,10);(x.t==="in"?ci:co)[dd]+=x.m}});
+  for(let d=1;d<=days;d++){ci[d]+=ci[d-1];co[d]+=co[d-1]}
+  const isCur=k===today().slice(0,7); const last=isCur?+today().slice(8,10):days;
+  const mx=Math.max(1,ci[days],co[days]); const W=320,H=140;
+  const pts=a=>a.slice(1,last+1).map((v,ix)=>`${(ix/(days-1))*W},${H-v/mx*(H-10)}`).join(" ");
+  if(!ci[days]&&!co[days]) return "";
+  const cross=co[last]>ci[last];
+  return `<div class="card"><h3>Ritmo del mes</h3><div class="sub">Lo que llevas ganado vs gastado día a día. Si la línea roja pasa a la verde, estás gastando más de lo que entra.</div>
+  <svg viewBox="-4 -4 ${W+8} ${H+26}" width="100%"><line x1="0" y1="${H}" x2="${W}" y2="${H}" stroke="#241E33"/>
+  <polyline points="${pts(ci)}" fill="none" stroke="#34D399" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="${pts(co)}" fill="none" stroke="#F87171" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="0" y="${H+18}" fill="#9C97A8" font-size="10" font-family="Inter">1</text><text x="${W}" y="${H+18}" text-anchor="end" fill="#9C97A8" font-size="10" font-family="Inter">${days}</text></svg>
+  <div class="sub" style="margin:8px 0 0"><span class="dot" style="background:#34D399"></span> Ganado ${money(ci[last])} &nbsp; <span class="dot" style="background:#F87171"></span> Gastado ${money(co[last])} ${cross?'· <b style="color:var(--out)">vas en rojo</b>':''}</div></div>`;
+}
+function vBalMeses(){
+  const ms=[];for(let x=5;x>=0;x--){const d=new Date(cur.getFullYear(),cur.getMonth()-x,1);const t=monthTotals(mk(d));ms.push({d,b:t.i-t.o})}
+  if(ms.every(m=>!m.b)) return "";
+  const mx=Math.max(1,...ms.map(m=>Math.abs(m.b)));const W=320,H=150,mid=H/2,bw=30;
+  const bars=ms.map((m,ix)=>{const x=ix*(W/6)+12;const h=Math.abs(m.b)/mx*(mid-14);const pos=m.b>=0;return `<rect x="${x}" y="${pos?mid-h:mid}" width="${bw}" height="${Math.max(h,1)}" rx="5" fill="${pos?"#34D399":"#F87171"}"/><text x="${x+bw/2}" y="${H+14}" text-anchor="middle" fill="#9C97A8" font-size="10" font-family="Inter">${MESES[m.d.getMonth()].slice(0,3)}</text>`}).join("");
+  return `<div class="card"><h3>¿Te sobró o te faltó?</h3><div class="sub"><span class="dot" style="background:#34D399"></span> Te sobró &nbsp; <span class="dot" style="background:#F87171"></span> Gastaste de más · últimos 6 meses</div><svg viewBox="0 0 ${W} ${H+18}" width="100%"><line x1="0" y1="${mid}" x2="${W}" y2="${mid}" stroke="#2d2640" stroke-dasharray="4 4"/>${bars}</svg></div>`;
 }
 function movRow(m){return `<div class="it" data-mov="${m.id}"><span class="ico">${ICON[m.cat]||"•"}</span><div class="tx"><b>${esc(m.c||m.cat)}</b><span>${esc(m.cat)} · ${fdate(m.f)}</span></div><span class="amt ${m.t}">${m.t==="in"?"+":"-"}${money(m.m)}</span></div>`}
 function vMovs(k){
@@ -245,7 +293,7 @@ function pagoRow(p){
 function vPagos(k){
   const ps=pagosDelMes(k);const pend=ps.filter(p=>!p.paid).reduce((s,p)=>s+p.m,0),pag=ps.filter(p=>p.paid).reduce((s,p)=>s+p.m,0);
   return `<div class="card"><h3>Por pagar</h3><div class="sub">Marca el círculo cuando lo pagues y se registra solo como egreso</div>
-  ${ps.length?`<div class="bar" style="margin:0 0 6px"><i style="width:${pag+pend?pag/(pag+pend)*100:0}%"></i></div><div class="sub">${money(pag)} pagado · ${money(pend)} pendiente</div><div class="list">${ps.map(pagoRow).join("")}</div>`:`<div class="empty">No tienes pagos este mes.</div>`}
+  ${ps.length?`<div class="bar" style="margin:0 0 6px;--bc:var(--pend)"><i style="width:${pag+pend?pag/(pag+pend)*100:0}%"></i></div><div class="sub">${money(pag)} pagado · ${money(pend)} pendiente</div><div class="list">${ps.map(pagoRow).join("")}</div>`:`<div class="empty">No tienes pagos este mes.</div>`}
   <button class="btn ghost" style="width:100%;margin-top:12px" data-new="pago">+ Agregar pago</button></div>`;
 }
 function vAhorro(){
@@ -254,12 +302,12 @@ function vAhorro(){
   <button class="btn ghost" style="width:100%;margin-top:12px" data-new="meta">+ Nueva meta</button></div>`;
 }
 function vDeudas(){
-  const sec=(tipo,tit,sub)=>{const ds=S.deudas.filter(d=>d.tipo===tipo);return `<div class="card"><h3>${tit}</h3><div class="sub">${sub}</div>${ds.length?ds.map(d=>`<div class="goal"><div class="top"><b>${esc(d.n)}</b><span>Falta ${money(Math.max(0,d.total-d.pag))}</span></div><div class="sub" style="margin:4px 0 0">${money(d.pag)} de ${money(d.total)}</div><div class="bar"><i style="width:${Math.min(100,d.pag/d.total*100)}%"></i></div><div class="act"><button class="btn sm p" data-abd="${d.id}">${tipo==="debo"?"+ Abonar":"+ Me pagaron"}</button><button class="btn sm ghost" data-deuda="${d.id}">Editar</button></div></div>`).join(""):`<div class="empty">Nada por aquí.</div>`}<button class="btn ghost" style="width:100%;margin-top:12px" data-new="${tipo}">+ Agregar</button></div>`};
+  const sec=(tipo,tit,sub)=>{const ds=S.deudas.filter(d=>d.tipo===tipo);return `<div class="card"><h3>${tit}</h3><div class="sub">${sub}</div>${ds.length?ds.map(d=>`<div class="goal"><div class="top"><b>${esc(d.n)}</b><span>Falta ${money(Math.max(0,d.total-d.pag))}</span></div><div class="sub" style="margin:4px 0 0">${money(d.pag)} de ${money(d.total)}</div><div class="bar" style="--bc:${tipo==="debo"?"var(--debo)":"var(--cobro)"}"><i style="width:${Math.min(100,d.pag/d.total*100)}%"></i></div><div class="act"><button class="btn sm p" data-abd="${d.id}">${tipo==="debo"?"+ Abonar":"+ Me pagaron"}</button><button class="btn sm ghost" data-deuda="${d.id}">Editar</button></div></div>`).join(""):`<div class="empty">Nada por aquí.</div>`}<button class="btn ghost" style="width:100%;margin-top:12px" data-new="${tipo}">+ Agregar</button></div>`};
   return sec("debo","Lo que debo","Tarjetas, préstamos, pagos a plazos")+sec("medeben","Me deben","Clientes o personas que te deben");
 }
 
 /* ---------- hojas (formularios) ---------- */
-function openSheet(html){$("sheet").innerHTML=`<div class="grab"></div>`+html;$("sh").classList.add("open")}
+function openSheet(html){$("sheet").innerHTML=`<div class="grab"></div><button class="x" onclick="closeSheet()" aria-label="Cerrar">✕</button>`+html;$("sh").classList.add("open")}
 function closeSheet(){$("sh").classList.remove("open")}
 $("shBg").onclick=closeSheet;
 function catsHtml(list,sel){return `<div class="cats">${list.map(([c,i])=>`<button type="button" data-cat="${c}" class="${c===sel?"on":""}">${i} ${c}</button>`).join("")}</div>`}
@@ -323,7 +371,7 @@ function form(k,obj){
   }
 }
 function defDate(){const k=mk(cur);return k===today().slice(0,7)?today():k+"-01"}
-function done(msg){save();closeSheet();render();toast(msg)}
+function done(msg){save();closeSheet();render();toast(msg,true)}
 function sheetAbono(title,cb){
   openSheet(`<h2>${title}</h2><div class="f"><label>Monto</label><input id="fm" class="money" inputmode="decimal" placeholder="$0"></div><div class="f"><label>Fecha</label><input id="ff" type="date" value="${defDate()}"></div><button class="btn p" id="ok">Guardar</button>`);
   $("ok").onclick=()=>{const v=num("fm");if(!v)return toast("Escribe el monto");cb(v,$("ff").value||today())};
@@ -331,6 +379,7 @@ function sheetAbono(title,cb){
 
 /* ---------- eventos ---------- */
 $("addBtn").onclick=sheetAdd;
+$("undoBtn").onclick=doUndo;
 $("bkBtn").onclick=sheetBackup;
 $("prev").onclick=()=>{cur.setMonth(cur.getMonth()-1);render()};
 $("next").onclick=()=>{cur.setMonth(cur.getMonth()+1);render()};
@@ -340,9 +389,9 @@ $("view").onclick=e=>{
   const k=mk(cur);
   if(t.dataset.mov){const m=S.movs.find(x=>x.id===t.dataset.mov);openSheet(`<h2>Editar ${m.t==="in"?"ingreso":"egreso"}</h2><div id="frm"></div>`);form(m.t,m)}
   else if(t.dataset.pay){const p=S.pagos.find(x=>x.id===t.dataset.pay);p.paid=p.paid||{};
-    if(p.paid[k]){delete p.paid[k];S.movs=S.movs.filter(m=>!(m.pid===p.id&&m.pk===k));toast("Marcado como pendiente")}
-    else{p.paid[k]=true;const day=p.rep?k+"-"+p.f.slice(8,10):p.f;S.movs.push({id:uid(),t:"out",m:p.m,c:p.c,cat:p.cat||"Servicios",f:day>today()?today():day,pid:p.id,pk:k});toast("Pagado ✓ y registrado como egreso")}
-    save();render()}
+    if(p.paid[k]){delete p.paid[k];S.movs=S.movs.filter(m=>!(m.pid===p.id&&m.pk===k));}
+    else{p.paid[k]=true;const day=p.rep?k+"-"+p.f.slice(8,10):p.f;S.movs.push({id:uid(),t:"out",m:p.m,c:p.c,cat:p.cat||"Servicios",f:day>today()?today():day,pid:p.id,pk:k});}
+    save();render();toast(p.paid[k]?"Pagado ✓ y registrado como egreso":"Marcado como pendiente",true)}
   else if(t.dataset.pago){const p=S.pagos.find(x=>x.id===t.dataset.pago);openSheet(`<h2>Editar pago</h2><div id="frm"></div>`);form("pago",p)}
   else if(t.dataset.new){openSheet(`<h2>${{pago:"Nuevo pago",meta:"Nueva meta",debo:"Lo que debo",medeben:"Me deben"}[t.dataset.new]}</h2><div id="frm"></div>`);form(t.dataset.new)}
   else if(t.dataset.abono){const m=S.metas.find(x=>x.id===t.dataset.abono);sheetAbono("Abonar a "+esc(m.n),(v,f)=>{m.ab+=v;S.movs.push({id:uid(),t:"out",m:v,c:"Ahorro: "+m.n,cat:"Ahorro",f});done("Abono guardado")})}
